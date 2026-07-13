@@ -1,0 +1,26 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: tienda-vehiculos-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: tienda_vehiculos
+    ports: ["3306:3306"]
+    volumes:
+      - ./tienda-vehiculos-db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+  backend:
+    build: ./tienda-vehiculos-backend
+    container_name: tienda-vehiculos-backend
+    environment:
+      DB_HOST: "db"
+      DB_USER: "alumno"
+      DB_PASSWORD: "alumno123"
+      DB_NAME: "tienda_vehiculos"
+      DB_PORT: "3306"
+    ports: ["3001:3001"]
+    depends_on: [db]
+  frontend:
+    build: ./tienda-vehiculos-frontend
+    container_name: tienda-vehiculos-frontend
+    ports: ["80:80"]
+    depends_on: [backend]
